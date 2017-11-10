@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorator="layout/blogLayout">
+<body>
+	<section layout:fragment="content">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-8 blog-main">
+					<div class="blog-post" id="projectId">
+						<h2 class="blog-post-title">项目进度</h2>
+						<p class="blog-post-meta"></p>
+						<p>ECS环境设置</p>
+						<p>项目架构搭建</p>
+						<p>相册模块开发</p>
+					</div>
+					<div class="blog-post" id="mapImageId">
+						<h2 class="blog-post-title">相册开发进度</h2>
+						<p class="blog-post-meta"></p>
+						<p>集成地图API</p>
+						<p>内网联通OSS</p>
+						<p>地图动态加载自定义信息框</p>
+						<p>信息框中Ajax异步上传文件(天坑)</p>
+						<p>文件上传至于OSS</p>
+						<p>集成Mybatis+Druid+SpringBoot</p>
+						<p>相关信息存入MYSQL数据库</p>
+						<p>数据库信息与OSS关联后成功展示在页面</p>
+						<p>地图添加多个标记的聚合功能</p>
+						<p>添加单个图片预览功能(压缩)</p>
+						<p>添加图片删除功能</p>
+						<p>添加原始图片下载功能</p>
+					</div>
+				</div>
+				<div class="col-sm-3 offset-sm-1 blog-sidebar">
+					<div class="sidebar-module sidebar-module-inset">
+						<h4>阿里云ECS</h4>
+						<p>
+							本文记录项目各模块的开发进展.<br/>
+							QQ:215860540
+						</p>
+					</div>
+					<div class="sidebar-module">
+						<h4>目录</h4>
+						<ol class="list-unstyled">
+							<li><a href="#projectId">项目进度</a></li>
+							<li><a href="#mapImageId">相册开发进度</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</section>
+</body>
+</html>

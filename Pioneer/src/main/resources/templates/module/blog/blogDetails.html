@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorator="layout/blogLayout">
+<body>
+	<section layout:fragment="content">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-8 blog-main">
+					<div class="blog-post" id="jdkId">
+						<h2 class="blog-post-title">安装JDK</h2>
+						<p class="blog-post-meta"></p>
+						<p>运行安装命令： apt-get install openjdk-8-jre-headless.</p>
+						<p>运行命令查看： java -version.</p>
+					</div>
+					<div class="blog-post" id="svnId">
+						<h2 class="blog-post-title">配置SVN 服务器</h2>
+						<p class="blog-post-meta"></p>
+						<p>apt-get install subversion<br/>
+							cd home<br/>
+							mkdir svn<br/>
+							cd /home/svn<br/>
+							mkdir repository<br/>
+							svnadmin create /home/svn/repository<br/>
+							-----编辑conf/svnserve.conf,保留如下内容----<br/>
+							[general]<br/>
+							anon-access = read<br/>
+							auth-access = write<br/>
+							password-db = passwd<br/>
+							authz-db = authz<br/>
+							[sasl]<br/>
+							-----编辑conf/authz,保留如下内容----<br/>
+							[aliases]<br/>
+							[groups]<br/>
+							harry = rw<br/>
+							* =<br/>
+							-----编辑conf/passwd,保留如下内容----<br/>
+							[users]<br/>
+							harry = harryPassword<br/>
+							---------------------------------------------<br/>
+							---------------------------------------------<br/>
+							启动服务器: sudo svnserve -d -r /home/svn/<br/>
+							svn：//xxx.xx.xx.xx/repository
+						</p>
+					</div>
+					<div class="blog-post" id="apacheSVNId">
+						<h2 class="blog-post-title">配置Apache-SVN服务器</h2>
+						<p class="blog-post-meta"></p>
+						<p>
+							apt-get install libapache2-svn apache2<br/>
+							/etc/init.d/apache2 restart或 service apache2 restart<br/>
+							--------修改/etc/apache2/mods-available/dav_svn.conf文件--------<br/>
+							(Location /svn><br/>
+							  DAV svn<br/>
+							  SVNParentPath /home/svn<br/>
+							  AuthType Basic<br/>
+							  AuthName "Subversion Repository"<br/>
+							  AuthUserFile /etc/apache2/dav_svn.passwd<br/>
+							  AuthzSVNAccessFile /etc/apache2/dav_svn.authz<br/>
+							  Require valid-user<br/>
+							(Location><br/>
+							--------创建/etc/apache2/dav_svn.authz文件--------<br/>
+							  [repository:/]<br/>
+                     		  * = rw<br/>
+							---------------------------------------------<br/>
+							htpasswd -c /etc/apache2/dav_svn.passwd harry(本人设置与SVN一致)<br/>
+							http://xxx.xx.xxx.xxx/svn/repository/<br/>
+						</p>
+					</div>
+					<div class="blog-post" id="eclipseSvnProxyId">
+						<h2 class="blog-post-title">配置Eclipse-SVN-Proxy(http)</h2>
+						<p class="blog-post-meta"></p>
+						<p>
+							打开C:\DocumentsandSettings\youruserName\ApplicationData\Subversion\servers文件<br/>
+							前面的#号去掉，并将＝号右边的值分别改为你的公司代理服务器地址和端口号,公司域名帐户，公司域名密码。
+							设置Eclipse/MyEclipse，确认SVN的客户端是SVNKit：这样，就可以在Eclipse/MyEclipse中通过代理使用SVN了。<br/>
+							<font color="red">注：</font>只能连接http的svn如http://xxx.xx.xxx.xxx/svn/repository/，不能连接如svn：//xxx.xx.xx.xx/repository这种.
+						</p>
+					</div>
+					<div class="blog-post" id="tomcatId">
+						<h2 class="blog-post-title">Tomcat 9配置</h2>
+						<p class="blog-post-meta"></p>
+						<p>
+							下载最新的<a href="http://tomcat.apache.org/download-90.cgi">tomcat 9</a> <br/>
+							复制到阿里云服务器后，解压缩<br/>
+							修改端口号使其默认端口为80<br/>
+							找到TOMCAT_HOME/conf/server.xml，编辑 
+							Host标签，在其中添加 (Context path="" docBase="appName" debug="0" reloadable="true"/)，其中appName为你要直接访问的项目名称。 <br/>
+							http://xxx.xxx.x.x:80/   <br/>
+						</p>
+					</div>
+					<div class="blog-post" id="jenkinsId">
+						<h2 class="blog-post-title">Jenkins持续集成</h2>
+						<p class="blog-post-meta"><a href="http://www.liaoxuefeng.com/article/001463233913442cdb2d1bd1b1b42e3b0b29eb1ba736c5e000">参考信息</a></p>
+						<p>
+							java -jar jenkins.war或者下载jenkins.war包从tomcat启动  <br/>
+							http://xxx.xxx.x.x:8080/jenkins   <br/>
+							选择推荐的插件，然后再Manage Jenkins-〉Manage Plugins安装maven integration plugin.  <br/>
+							配置Global Tool Configuration，设置jdk,maven路径。  <br/>
+							创建maven任务，设置svn和svn帐号密码，定时下载代码与maven依赖包，打包发布  <br/>
+							本系统将tomcat的启动项目指向了jenkin的 workspace编译后的war文件(也可以使用maven另一功能，自动将打包后的文件通过指定协议上传至特定服务器指定位置，本系统未涉及)<br/>
+							jenkins设置集成前关闭tomcat，集成后启动tomcat<br/>
+						</p>
+					</div>
+				</div>
+				
+				
+				
+				<div class="col-sm-3 offset-sm-1 blog-sidebar">
+					<div class="sidebar-module sidebar-module-inset">
+						<h4>阿里云ECS</h4>
+						<p>
+							本文记录阿里云开发环境的详细配置.<br/>
+							使用eclipse穿透公司的代理服务器，访问阿里云SVN服务器<br/>
+							配置jenkins,maven，实现项目的持续集成<br/>
+							QQ:215860540
+						</p>
+					</div>
+					<div class="sidebar-module">
+						<h4>目录</h4>
+						<ol class="list-unstyled">
+							<li><a href="#jdkId">安装JDK</a></li>
+							<li><a href="#svnId">配置SVN 服务器</a></li>
+							<li><a href="#apacheSVNId">配置Apache-SVN服务器</a></li>
+							<li><a href="#eclipseSvnProxyId">Eclipse-SVN-Proxy</a></li>
+							<li><a href="#tomcatId">Tomcat 9配置</a></li>
+							<li><a href="#jenkinsId">配置Jenkins</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorator="layout/mapLayout">
+<body>
+	<section layout:fragment="content" style="height: 100%;">
+		<div id="allmap" style="margin:0 auto;width:100%;"></div>
+		<div id="infoWindowsHidden" style="display:none;"></div>
+		<ul class="dropdown-menu calcite-theme-light" id="myMenu">
+<!-- 			<li class="menueItem" style="text-align:center;" actionName="deleteImage"><a role="button"><span class="glyphicon glyphicon-th-large"></span>删除</a></li> -->
+			<li style="text-align:center;"><a role="button"  id="downloadImageId"><span class="glyphicon glyphicon-th-large"></span>下载</a></li>
+		</ul>
+			<script type="text/javascript">
+		/*<![CDATA[*/
+			var map = new BMap.Map("allmap",{enableMapClick: false});
+			map.setMapStyle({
+				  styleJson:[
+					          {
+				                    "featureType": "railway",
+				                    "elementType": "all",
+				                    "stylers": { "visibility": "off" }
+					          },
+					          {
+				                    "featureType": "highway",
+				                    "elementType": "all",
+				                    "stylers": { "visibility": "off" }
+				          	  }
+					]
+				});
+			var point = new BMap.Point(101.230092,26.970136);
+			map.centerAndZoom(point,5);
+			var centerMarker = new BMap.Marker(point);
+			centerMarker.enableDragging();
+			centerMarker.setAnimation(BMAP_ANIMATION_BOUNCE);
+			centerMarker.setLabel("centerMarker");
+			centerMarker.addEventListener("click", function(){   
+				console.log('centerMarker.addEventListener("click"');
+				InfoWindowsUtils.displayUploadInfoWindowsForCenterMarker(this);
+			});
+			map.addOverlay(centerMarker);
+			map.enableKeyboard();
+			centerMarker.setPosition(point);
+			var loadImageGeolocationAroundCenterPoint=new loadImageGeolocationAroundCenterPoint();
+			loadImageGeolocationAroundCenterPoint.run();
+			var InfoWindowsUtils=new InfoWindowsUtils();
+			map.enableScrollWheelZoom();   //启用滚轮放大缩小，默认禁用
+			map.disableContinuousZoom();
+			map.addControl(new HomeControl());
+			map.addControl(new ImagesPreViewControl());
+			map.addControl(new BMap.MapTypeControl());     //添加地图类型
+// 			map.addControl(new BMap.ScaleControl());       // 添加默认比例尺控件  
+// 			map.addControl(new BMap.NavigationControl());  //添加默认缩放平移控件  
+			map.addEventListener("dragging", dragging);
+			map.addEventListener("dragend", dragend);
+			map.addEventListener("zoomend", function(e){
+				console.log('zoomend');
+				centerMarker.setPosition(map.getCenter());
+		    });
+			map.addEventListener("tilesloaded", tilesloaded);
+			function tilesloaded(){
+				console.log('tilesloaded');
+				loadImageGeolocationAroundCenterPoint.run();
+			}
+			map.addEventListener("mouseover", function(e){
+				console.log('mouseover');
+				$('#myMenu').hide();
+		    });
+			
+			var geolocationControl = new BMap.GeolocationControl();
+		    geolocationControl.addEventListener("locationSuccess", function(e){
+		    	console.log('locationSuccess');
+		    	centerMarker.setPosition(map.getCenter());
+		    	loadImageGeolocationAroundCenterPoint.run();
+		    });
+		    geolocationControl.addEventListener("locationError",function(e){
+		    	alert(e.message);
+		    });
+		    map.addControl(geolocationControl);
+// 		    var menu = new BMap.ContextMenu();
+// 		    var menuPoint;
+// 			menu.addEventListener("open",function(e){
+// 				menuPoint = new BMap.Point(e.point.lng,e.point.lat);
+// 		    });
+// 			var txtMenuItem = [
+// 			   				{
+// 			   					text:'删除',
+// 			   					callback:function(){alert('delete');}
+// 			   				}
+// 			   			];
+// 			   			for(var i=0; i < txtMenuItem.length; i++){
+// 			   				menu.addItem(new BMap.MenuItem(txtMenuItem[i].text,txtMenuItem[i].callback,100));
+// 			   			}
+// 			map.addContextMenu(menu);
+			
+			function InfoWindowsUtils(){
+				this.closeviewInfoWindows=function(){
+					map.closeInfoWindow();
+					return true;
+				};
+				this.displayViewInfoWindows=function(marker,uuid){
+					console.log('displayViewInfoWindows');
+					var data = new FormData();
+					data.append("uuid", uuid);
+					$.ajax({ url: "loadViewFileWindowTemplate", 
+						dataType:"html",
+						type:'POST', 
+						data:data,
+						processData : false, //prevent jQuery from automatically transforming the data into a query string
+						contentType : false,
+						cache : false,
+						timeout : 600000,
+						success: function(data){
+							$('#infoWindowsHidden').html(data);
+							$('#myMenu').hide();
+							var infoWindow = new BMap.InfoWindow($('#infoWindowsHidden').html());  // 创建信息窗口对象
+							infoWindow.disableCloseOnClick();
+							infoWindow.disableAutoPan();
+							map.openInfoWindow(infoWindow,marker.getPosition());
+							map.removeEventListener("tilesloaded", tilesloaded);
+							map.removeEventListener("dragend", dragend);
+							infoWindow.addEventListener("close", function(){          
+							   	map.addEventListener("tilesloaded", tilesloaded);
+								map.addEventListener("dragend", dragend);
+							});
+							//图片加载完毕重绘infowindow
+							   document.getElementById('infoWindowsImageId').onload = function (){
+								   infoWindow.redraw();   //防止在网速较慢，图片未加载时，生成的信息框高度比图片的总高度小，导致图片部分被隐藏
+								   $('#downloadImageId').attr('href','/map/downloadImage?imageUUID='+$('#imageUUIDiD').val());
+								   $('#infoWindowsImageId').bind("contextmenu", function(e) {
+										$('#myMenu').show(100);
+										$('#myMenu').css({
+											'top' : e.pageY + 'px',
+											'left' : e.pageX+ 'px'
+										});
+										return false;
+									});
+								   $('#infoWindowsImageId').click(function(){
+									   $('#myMenu').hide(100);
+								   });
+								   $('#myMenu').bind("contextmenu", function(e) {
+										return false;
+									});
+							   }
+				      }});
+				};
+				this.displayUploadInfoWindowsForCenterMarker=function(marker){
+					console.log('displayUploadInfoWindowsForCenterMarker');
+					$.ajax({ url: "loadUploadFileWindowTemplate", 
+						dataType:"html",
+						success: function(data){
+							$('#infoWindowsHidden').html(data);
+							var infoWindow = new BMap.InfoWindow($('#infoWindowsHidden').html());  // 创建信息窗口对象
+							infoWindow.disableCloseOnClick();
+							marker.openInfoWindow(infoWindow);
+							map.removeEventListener("dragging", dragging);
+							map.removeEventListener("dragend", dragend);
+							infoWindow.addEventListener("close", function(){          
+							   	map.addEventListener("dragging", dragging);
+								map.addEventListener("dragend", dragend);
+							});
+				      }});
+				};
+			}
+			
+			function dragend(){
+				console.log('dragend');
+				centerMarker.setPosition(map.getCenter());
+				loadImageGeolocationAroundCenterPoint.run();
+			}
+			function dragging(){
+				console.log('dragging');
+				centerMarker.setPosition(map.getCenter());
+			}
+			
+			
+			
+			function loadImageGeolocationAroundCenterPoint(){
+				var markerClusterer = new BMapLib.MarkerClusterer(map);
+				this.run=function(){
+					console.log('loadImageGeolocationAroundCenterPoint');
+					var data = new FormData();
+					var southWestPoint=map.getBounds().getSouthWest();
+					var northEastPoint=map.getBounds().getNorthEast();
+					data.append("southWestPointlng", southWestPoint.lng);
+					data.append("southWestPointlat", southWestPoint.lat);
+					data.append("northEastPointlng", northEastPoint.lng);
+					data.append("northEastPointlat", northEastPoint.lat);
+					$.ajax({ url: "loadImageGeolocationAroundCenterPoint", 
+						type:'POST', 
+						data:data,
+						processData : false, //prevent jQuery from automatically transforming the data into a query string
+						contentType : false,
+						cache : false,
+						timeout : 600000,
+						success: function(results){
+							markerClusterer.clearMarkers();
+							var markerClustererIcon = new BMap.Icon("/images/map/symbols/shapes/RedCircleLargeB.png", new BMap.Size(32,32),{imageSize:new BMap.Size(32,32)});
+							jQuery.each(jQuery(results), function(i, result) {
+								var temMarker=new BMap.Marker(new BMap.Point(result.lng,result.lat),{icon:markerClustererIcon});
+								temMarker.addEventListener("mouseover", function(){          
+									InfoWindowsUtils.displayViewInfoWindows(this,result.uuid);
+								});
+								temMarker.addEventListener("click", function(){          
+									InfoWindowsUtils.displayViewInfoWindows(this,result.uuid);
+								});
+								markerClusterer.addMarker(temMarker);
+							});
+				      	},
+				      	complete:function(results){
+				      		console.log('loadImageGeolocationAroundCenterPoint complete:function');
+				      		jQuery.each(jQuery(results), function(i, result) {
+				      			$('#ImagesPreViewControl').html("<tr><td><img th:src='@{/map/loadImage(imageUUID=${uuid})}'/><input type='hidden' value='${uuid}'></input></td></tr>")
+							});
+				      	},
+						error : function(e) {
+							console.log("ERROR : ", e);
+						}
+					});
+				}
+			}
+			
+			
+			
+			function viewInfoWindowsItemAction(){
+				var actionName=actionName
+				var data = new FormData();
+				var imageUUID=$("#imageUUIDiD").val();
+				data.append("imageUUID", imageUUID);
+				$.ajax({ url: "deleteImage", 
+					type:'POST', 
+					data:data,
+					processData : false, //prevent jQuery from automatically transforming the data into a query string
+					contentType : false,
+					cache : false,
+					timeout : 600000,
+					success: function(results){
+						$('#myMenu').hide(100);
+						map.closeInfoWindow();
+			      	},
+					error : function(e) {
+						console.log("ERROR : ", e);
+					}
+				});
+			} 
+			$(function(){
+				$('#myMenu .menueItem').click(function(){
+					var actionName=$(this).attr("actionName");
+					var data = new FormData();
+					var imageUUID=$("#imageUUIDiD").val();
+					data.append("imageUUID", imageUUID);
+					$.ajax({ url: actionName, 
+						type:'POST', 
+						data:data,
+						processData : false, //prevent jQuery from automatically transforming the data into a query string
+						contentType : false,
+						cache : false,
+						timeout : 600000,
+						success: function(results){
+							$('#myMenu').hide(100);
+				      	},
+						error : function(e) {
+							console.log("ERROR : ", e);
+						}
+					});
+				});
+			});
+		/*]]>*/
+	</script>
+	</section>
+</body>
+</html>

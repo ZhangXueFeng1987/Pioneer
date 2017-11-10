@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="head_home">
+		<meta charset="UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<title>Pioneer</title>
+		<meta name="author" content="章学锋" />
+		<meta name="QQ" content="215860540" />
+		<meta name="baidu-site-verification" content="HBkN8CNx3Z" />
+		<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"></link>
+		<link rel="stylesheet" th:href="@{/css/blog.css}" />
+		<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script src="https://cdn.bootcss.com/popper.js/1.9.3/umd/popper.min.js" integrity="sha384-knhBOwpf8/28D6ygAjJeb0STNDZqfPbKaWQ8wIz/xgSc0xXwKsKhNype8fmfMka2" crossorigin="anonymous"></script>
+		<script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+		<script src="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+	</div>
+	<div th:fragment="head_blog">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<title>Pioneer</title>
+		<meta name="author" content="章学锋" />
+		<meta name="QQ" content="215860540" />
+		<meta name="keywords" content="阿里云" />
+		<meta name="baidu-site-verification" content="HBkN8CNx3Z" />
+		<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"></link>
+		<link rel="stylesheet" th:href="@{/css/blog.css}" />
+		<link rel="stylesheet" th:href="@{/jQuery-File-Upload-9.18.0/css/jquery.fileupload.css}"/>
+		<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script src="https://cdn.bootcss.com/popper.js/1.9.3/umd/popper.min.js" integrity="sha384-knhBOwpf8/28D6ygAjJeb0STNDZqfPbKaWQ8wIz/xgSc0xXwKsKhNype8fmfMka2" crossorigin="anonymous"></script>
+		<script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+		<script src="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+	</div>
+	<div th:fragment="header_map">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<title>Pioneer</title>
+		<meta name="author" content="章学锋" />
+		<meta name="QQ" content="215860540" />
+		<meta name="keywords" content="照片, 百度地图, 阿里云, OSS" />
+		<meta name="baidu-site-verification" content="HBkN8CNx3Z" />
+		<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"></link>
+		<link rel="stylesheet" th:href="@{/css/map.css}" />
+		<link rel="stylesheet" th:href="@{/jQuery-File-Upload-9.18.0/css/jquery.fileupload.css}"/>
+		
+		<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script src="https://cdn.bootcss.com/popper.js/1.9.3/umd/popper.min.js" integrity="sha384-knhBOwpf8/28D6ygAjJeb0STNDZqfPbKaWQ8wIz/xgSc0xXwKsKhNype8fmfMka2" crossorigin="anonymous"></script>
+		<script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+		<script src="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="http://api.map.baidu.com/getscript?v=2.0&amp;ak=873Lw4GnN0EhGdsOjj5YNQSU1FsBXhWo&amp;services=&amp;t=20170601195325"></script>
+		<script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+    	<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+		<script  th:src="@{/js/map/Control.js}"></script>
+	</div>
+</body>
+</html>
+
+

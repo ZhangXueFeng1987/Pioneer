@@ -1,0 +1,32 @@
+spring:
+    thymeleaf:
+        mode:HTML5
+        encoding:UTF-8
+        content-type:text/html
+        cache:false
+    datasource:
+        name: test
+        url: jdbc:mysql://106.14.112.252:3306/Pioneer
+        username: root
+        password: root
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        filters: stat
+        maxActive: 20
+        initialSize: 1
+        maxWait: 60000
+        minIdle: 1
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+    http:
+        multipart:
+            max-file-size: 15MB
+            max-request-size: 15MB
+server:
+    port:8080

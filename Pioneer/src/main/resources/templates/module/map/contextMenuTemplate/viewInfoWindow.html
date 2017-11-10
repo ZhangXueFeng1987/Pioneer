@@ -1,0 +1,10 @@
+	<span id="viewInfoWindows">
+			<table role="presentation" class="table table-striped">
+				<tbody id="viewInfoWindowsfileDisplay">
+					<tr>
+						<td>
+						<img th:src="@{/map/loadImage(imageUUID=${uuid})}" id="infoWindowsImageId" ondblclick="InfoWindowsUtils.closeviewInfoWindows()"/><input type="hidden" id="imageUUIDiD"  th:value="${uuid}"></input></td>
+					</tr>
+				</tbody>
+			</table>
+	</span>

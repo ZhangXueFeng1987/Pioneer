@@ -1,0 +1,12 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/header :: head_blog"></head>
+<body>
+	<span th:replace="fragment/nav :: #blogNavId"></span>
+
+	<div layout:fragment="content" id="content"></div>
+
+</body>
+</html>
+
+

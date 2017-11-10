@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<body>
+
+	<div class="blog-masthead" id="homeNavId">
+		<div class="container">
+			<nav class="nav blog-nav">
+				<a class="nav-link" th:href="@{/index}">首页</a> 
+<!-- 				<a class="nav-link" th:href="@{/blog/index}">笔记 </a> -->
+				<a class="nav-link"
+					th:href="@{/map/index}">云图
+				</a>
+			</nav>
+		</div>
+	</div>
+	<div class="blog-masthead" id="blogNavId">
+		<div class="container">
+			<nav class="nav blog-nav">
+				<a class="nav-link" th:href="@{/index}">首页</a> <a class="nav-link"
+					th:href="@{/blog/index}">笔记
+				</a> <a class="nav-link" th:href="@{/blog/environmentSetup}">设置</a>
+				<a class="nav-link" th:href="@{/blog/scheduleLogs}">进度</a>
+			</nav>
+		</div>
+	</div>
+	<div class="blog-masthead" id="mapNavId">
+		<div class="container">
+			<nav class="nav blog-nav">
+				<a class="nav-link" th:href="@{/index}">首页</a> <a class="nav-link"
+					th:href="@{/map/index}">云图
+				</a>
+			</nav>
+		</div>
+	</div>
+</body>
+</html>
+
+

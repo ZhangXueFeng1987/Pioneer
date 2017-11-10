@@ -1,0 +1,123 @@
+<span><span><span id="uploadInfoWindows">
+			<table role="presentation" class="table table-striped">
+				<tr>
+					<td><span class="btn btn-success fileinput-button"> <i
+							class="glyphicon glyphicon-plus"></i> <span>添加</span> <input
+							type="file" id="files" name="files"
+							onchange="fire_ajax_storeData();" multiple="multiple" />
+					</span></td>
+					<td><button type="submit" class="btn btn-primary start"
+							onclick="fire_ajax_submit();">
+							<i class="glyphicon glyphicon-upload"></i> <span>上传</span>
+						</button></td>
+				</tr>
+				<tbody id="filesDisplay"></tbody>
+			</table>
+	</span> <script type="text/javascript">
+		/*<![CDATA[*/
+		var formDataMap = {};
+		function validUploadedFile() {
+			var validResult = true;
+			jQuery.each(jQuery('#files')[0].files, function(i, file) {
+				var fileExt = file.name.substring(file.name.lastIndexOf("."))
+						.toLowerCase();
+				if (!fileExt.match(/.jpg|.gif|.jpeg|.png|.bmp/i)) {
+					alert("[" + file.name + "]不是图片,请重新上传!");
+					validResult = false;
+					return false;
+				}
+			});
+			return validResult;
+		}
+		function fire_ajax_submit() {
+			if (Object.keys(formDataMap).length == 0) {
+				return;
+			}
+			var data = new FormData();
+			for ( var key in formDataMap) {
+				data.append("files", formDataMap[key]);
+			}
+			data.append("lng", map.getInfoWindow().getPosition().lng);
+			data.append("lat", map.getInfoWindow().getPosition().lat);
+			$.ajax({
+				type : "POST",
+				url : "uploadImage",
+				data : data,
+				processData : false, //prevent jQuery from automatically transforming the data into a query string
+				contentType : false,
+				cache : false,
+				timeout : 600000,
+				success : function(data) {
+					console.log('a');
+					formDataMap = {};
+					console.log('a');
+					$("#filesDisplay").html('');
+					$('<tr/>')
+					.html(
+							'<td id="uploadSuccess">上传成功!</td><td></td>')
+					.appendTo("#filesDisplay");
+					map.getInfoWindow().redraw();
+				},
+				error : function(e) {
+					$("#result").text(e.responseText);
+					console.log("ERROR : ", e);
+					$("#btnSubmit").prop("disabled", false);
+
+				}
+			});
+
+		}
+		function fire_ajax_storeData() {
+			$('#uploadSuccess').parent().remove();
+			if (jQuery('#files')[0].files.length == 0) {
+				return;
+			}
+			var validResult = validUploadedFile();
+			if (validResult == false) {
+				return;
+			}
+			var files = $('#files').prop('files');
+			jQuery
+					.each(
+							jQuery('#files')[0].files,
+							function(i, file) {
+								var uuid = 'file-' + getUuid();
+								formDataMap[uuid] = file;
+								$('<tr/>')
+										.html(
+												'<td>'
+														+ file.name
+														+ '<span style="display:none;" id="uuid">'
+														+ uuid
+														+ '</span></td><td><button type="button" class="btn btn-danger delete" style="cursor:pointer;" onclick="removeMyself(this);"><i class="glyphicon glyphicon-trash"></i><span>Delete</span></button></td>')
+										.appendTo("#filesDisplay");
+							});
+			map.getInfoWindow().redraw();
+		}
+		function removeMyself(a) {
+			var formDataMaptemp = {};
+			for ( var key in formDataMap) {
+				if (key == $(a).parent().parent().find('#uuid').text()) {
+				} else {
+					formDataMaptemp[key] = formDataMap[key];
+				}
+				formDataMap = formDataMaptemp;
+			}
+			$(a).parent().parent().remove();
+			map.getInfoWindow().redraw();
+		}
+		function getUuid() {
+			var s = [];
+			var hexDigits = "0123456789abcdef";
+			for (var i = 0; i < 36; i++) {
+				s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+			}
+			s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+			s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+			s[8] = s[13] = s[18] = s[23] = "-";
+
+			var uuid = s.join("");
+			return uuid;
+		}
+		/*]]>*/
+	</script> </span></span>
